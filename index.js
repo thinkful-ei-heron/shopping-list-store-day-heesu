@@ -1,11 +1,14 @@
+'use strict'
+
 const store = {
   items: [
-    { id: cuid(), name: 'apples', checked: false },
-    { id: cuid(), name: 'oranges', checked: false },
-    { id: cuid(), name: 'milk', checked: true },
-    { id: cuid(), name: 'bread', checked: false }
+    { id: cuid(), name: 'apples', checked: false, edit: false },
+    { id: cuid(), name: 'oranges', checked: false, edit: false },
+    { id: cuid(), name: 'milk', checked: true, edit: false },
+    { id: cuid(), name: 'bread', checked: false, edit: false }
   ],
-  hideCheckedItems: false
+  hideCheckedItems: false,
+  itemEdit: false
 };
 
 const generateItemElement = function (item) {
@@ -23,6 +26,7 @@ const generateItemElement = function (item) {
         <button class='shopping-item-toggle js-item-toggle'>
           <span class='button-label'>check</span>
         </button>
+
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
         </button>
@@ -95,6 +99,31 @@ const getItemIdFromElement = function (item) {
     .data('item-id');
 };
 
+const handleEditItemSubmit = function () {
+  $('.js-shopping-list').on('submit','#js-edit-form', function (event) {
+    event.preventDefault();
+    let itemId = getItemIdFromElement(event.currentTarget);
+    let titleEdit = $(event.currentTarget).find('.js-edit-form').val();
+    itemEdit(itemId, titleEdit);
+    render();
+  });
+};
+
+const editItem = function (itemId, titleEdit) {
+  let index = store.items.findIndex(item => item.id === index);
+  store.items[index].name = titleEdit;
+  store.items[index].edit = false;
+  store.itemEdit = false;
+}
+
+const handleEditItemClicked = function() {
+  return `
+  <form id="js-item-edit-form">
+    <input type="text" name="item-edit-form" class="js-edit-form" placeholder="item">
+    <button class="edit-button" type="submit">Edit</button>
+  </form>`;
+};
+
 /**
  * Responsible for deleting a list item.
  * @param {string} id 
@@ -160,6 +189,8 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleEditItemSubmit();
+  handleEditItemClicked();
 };
 
 // when the page loads, call `handleShoppingList`
