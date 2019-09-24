@@ -109,7 +109,7 @@ const handleEditItemSubmit = function () {
   });
 };
 
-const editItem = function (itemId, titleEdit) {
+const editItemList = function (itemId, titleEdit) {
   let index = store.items.findIndex(item => item.id === index);
   store.items[index].name = titleEdit;
   store.items[index].edit = false;
